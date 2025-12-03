@@ -124,21 +124,18 @@ export function computeStatistics(
     if (!numbersInFahrenheit.every(isTempInFRange)) {
         throw new TypeError('Input values must result in valid human temperatures (93F-105F).');
     }
-    
-    let sum = 0;
-    let min = numbersInFahrenheit[0];
-    let max = numbersInFahrenheit[0];
-    
-    for (const val of numbersInFahrenheit) {
-        sum += val;
-        if (val < min) min = val;
-        if (val > max) max = val;
-    }
+
+    const values=numbersInFahrenheit.reduce((acc,val) => {
+        acc.sum+=val;
+        acc.min=Math.min(acc.min,val);
+        acc.max=Math.max(acc.max,val);
+        return acc;
+    },{sum:0,min:Infinity,max:-Infinity});
 
     return {
-        average: sum / numbersInFahrenheit.length,
-        min,
-        max,
+        average: values.sum / numbersInFahrenheit.length,
+        min: values.min,
+        max: values.max,
         unit: 'F'
     };
 }
